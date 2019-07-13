@@ -2,7 +2,6 @@
 help:
 	@echo "possible make commands:"
 	@echo "    make lint         runs the various python linters"
-	@echo "    make fix          runs black autofixer"
 	@echo "    make tests        runs the testing suite"
 	@echo "    make docs         generate the documentation pages (html)"
 	@echo "    make opendocs     opens the documentation pages in a browser (utilizes xdg-open)"
