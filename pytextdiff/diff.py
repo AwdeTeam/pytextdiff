@@ -45,3 +45,13 @@ class Diff:
     def concat(self, diff):
         """ Concatenate this diff with another in-order """
         return Diff(self._changes + diff._changes)
+
+    def to_dict(self):
+        """ Generate a dictionary representation of this diff """
+        return {"diff" : [[index, is_add, word] for index, is_add, word in self._changes]}
+
+    @classmethod
+    def from_dict(cls, dct):
+        """ Generate a diff from the dictionary """
+        return Diff(dct["diff"])
+        
