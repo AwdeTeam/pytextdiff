@@ -54,24 +54,23 @@ def parse_wdiff_output(output):
 
     changes = []
 
-    # split the output into words (naively by spaces)
-    words = output.split(" ")
+    # find each instance of a removal starting delimiter
+    removal_starts = output.split("[-")
 
-    building = False # set to True if found an opening delimiter and searching for end delimiter
-    building_addition = False
-    building_index = 0
-    building_phrase = "" # keeps track of a removal or deletion that spans multiple iterations/words
+    word_offset = 0
 
-    for word in words:
+    for removal_start_section in removal_starts:
+        # ensure begins with delimiter
+        if removal_start_section[:2] != "[-":
+            word_offset += len(removal_start_section.split(" "))
+            continue
 
-        del_begin = word.index("[-")
-        del_end = word.index("-]")
-        add_begin = word.index("{+")
-        add_end = word.index("+}")
+        # find the index of the end delimiter
+        end_index = removal_start_section.index("-]")
+        remove_section = removal_start_section[2:end_index]
 
-        if building:
-            pass
-        else:
-            if del_begin != -1: # do we have a delition beginning?
-                if del_end != -1: # do we also have a deletion ending?
-                    pass
+        change = (remove_section, word_offset, "-")
+        changes.append(change)
+
+        # recalculate word offset
+        word_offset += len(removal_start_section.split(" "))
