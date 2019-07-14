@@ -54,6 +54,8 @@ def parse_wdiff_output(output):
 
     changes = []
 
+    # ---- parse output for removals ----
+
     # find each instance of a removal starting delimiter
     removal_starts = output.split("[-")
 
@@ -74,3 +76,30 @@ def parse_wdiff_output(output):
 
         # recalculate word offset
         word_offset += len(removal_start_section.split(" "))
+
+    # ---- parse output for additions ----
+
+    addition_starts = output.split("{+")
+
+    # find each instance of a addition starting delimiter
+    addition_starts = output.split("{+")
+
+    word_offset = 0
+
+    for addition_start_section in addition_starts:
+        # ensure begins with delimiter
+        if addition_start_section[:2] != "{+":
+            word_offset += len(addition_start_section.split(" "))
+            continue
+
+        # find the index of the end delimiter
+        end_index = addition_start_section.index("+}")
+        remove_section = addition_start_section[2:end_index]
+
+        change = (remove_section, word_offset, "+")
+        changes.append(change)
+
+        # recalculate word offset
+        word_offset += len(addition_start_section.split(" "))
+
+    # NOTE: this will require a second pass through where the addition offsets take into account the removed lengths of any prior removals
