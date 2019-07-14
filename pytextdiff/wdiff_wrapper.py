@@ -54,6 +54,7 @@ def parse_wdiff_output(output):
 
     changes = []
 
+
     # ---- parse output for removals ----
 
     # find each instance of a removal starting delimiter
@@ -76,6 +77,7 @@ def parse_wdiff_output(output):
 
         # recalculate word offset
         word_offset += len(removal_start_section.split(" "))
+
 
     # ---- parse output for additions ----
 
