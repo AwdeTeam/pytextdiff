@@ -22,40 +22,26 @@ class Diff:
     Diffs are immutable.
     """
 
-    def __init__(self, additions, subtractions):
-        self._additions #A list of ordered pairs (index, word) to add to the text
-        self._subtractions #A list of ordered pairs (index, word) to remove from the text
-        self._inverted = False
+    def __init__(self, changes):
+        self._changes # List of triplets (index, is_addition, word)
 
     def apply(self, string):
         """ Modify the string according to the diff """
         words = string.split(" ")
 
-        if self._inverted:
-            for index, _ in self.subtractions:
-                del words[index]
-
-        for index, word in self._additions:
-            words.insert(index, word)
-
-        if not self._inverted:
-            for index, _ in self.subtractions:
+        for index, is_add, word in self._changes:
+            if is_add:
+                words.insert(index, word)
+            else:
                 del words[index]
 
         return " ".join(words)
 
     def invert(self):
         """ Invert the diff so that it undoes itself """
-        invdiff = Diff(self._subtractions[::-1], self._additions[::-1])
-        invdiff._inverted = not self._inverted
+        invdiff = Diff([(index, not is_add, word) for index, is_add, word in self._changes[::-1]])
+        return invdiff
 
     def concat(self, diff):
         """ Concatenate this diff with another in-order """
-        if self._inverted != diff._inverted:
-            # I'm not really sure what to do when this happens
-            raise NotImplementedError
-        conadds = self._additions + diff._additions
-        consubs = self._subtractions + diff._subtractions
-        condiff = Diff(conadds, consubs)
-        condiff._inverted = self._inverted
-        return condiff
+        return Diff(self._changes + diff._changes)
