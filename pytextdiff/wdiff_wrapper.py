@@ -102,4 +102,22 @@ def parse_wdiff_output(output):
         # recalculate word offset
         word_offset += len(addition_start_section.split(" "))
 
-    # NOTE: this will require a second pass through where the addition offsets take into account the removed lengths of any prior removals
+
+    # ---- offset adjustment ----
+    # since word removals affect actual word indices, do a second pass through of the changes and
+    # update the indices to account for prior changes
+
+    # sort changes by the word offset
+    changes = sorted(changes, key=lambda tup: tup[1])
+
+    # for every removal in the change, take the number of words in it and subtract it from all
+    # later changes' word offsets
+    for i in range(0, len(changes)):
+        change = changes[i]
+        if change[2] == "-": # if it's a removal
+            change_word_count = len(change[0].split(" "))
+            for j in range(i+1, len(changes)): # subtract word count from all later changes
+                future_change = changes[j]
+                future_change[1] -= change_word_count
+
+    return changes
