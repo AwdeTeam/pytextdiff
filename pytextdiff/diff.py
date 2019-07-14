@@ -54,4 +54,3 @@ class Diff:
     def from_dict(cls, dct):
         """ Generate a diff from the dictionary """
         return Diff(dct["diff"])
-        
