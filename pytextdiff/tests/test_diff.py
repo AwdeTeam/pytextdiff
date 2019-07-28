@@ -23,4 +23,3 @@ def test_apply():
     string = "Hey, everybody! Somebody 'mattress' to Mr Lambert - *twice*!"
     diff = Diff([(3, True, "said")])
     assert diff.apply(string) == "Hey, everybody! Somebody said 'mattress' to Mr Lambert - *twice*!"
-

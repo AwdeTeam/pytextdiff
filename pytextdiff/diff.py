@@ -23,7 +23,7 @@ class Diff:
     """
 
     def __init__(self, changes):
-        self._changes # List of triplets (index, is_addition, word)
+        self._changes = changes # List of triplets (index, is_addition, word)
 
     def apply(self, string):
         """ Modify the string according to the diff """
