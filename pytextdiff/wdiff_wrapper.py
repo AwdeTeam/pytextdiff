@@ -23,8 +23,43 @@ from shlex import split
 
 from pytextdiff.exceptions import WDiffNotFound
 
+from pytextdiff import diff
 
-def call_wdiff(original_text_file, updated_text_file):
+
+def run_wdiff(original_text, updated_text):
+    """
+    Takes given text and stores into temporary files to be used by the wdiff utility.
+
+    Returns the Diff object between the two pieces of text.
+    """
+
+    # store the text into files
+    original_file = "pytextdiff_temp_original_text_file"
+    logging.info("Saving original text to file...")
+    with open(original_file, 'w') as out_file:
+        out_file.write(original_text)
+
+    updated_file = "pytextdiff_temp_updated_text_file"
+    logging.info("Saving updated text to file...")
+    with open(updated_file, 'w') as out_file:
+        out_file.write(updated_text)
+
+    # run wdiff
+    output = call_wdiff_cmd(original_file, updated_file)
+
+    # remove temporary files
+    logging.info("Removing temporary files...")
+    os.remove(original_file)
+    os.remove(updated_file)
+
+    # parse changes
+    changes = parse_wdiff_output(output)
+
+    diff_obj = diff.Diff(changes)
+    return diff_obj
+
+
+def call_wdiff_cmd(original_text_file, updated_text_file):
     """
     Call the command line utility.
 
