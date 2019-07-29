@@ -20,7 +20,7 @@ class Diff:
     """
     A Diff can be applied to a string to modify it or to another diff to combine
     Diffs are immutable.
-    Diffs are _not_ communtitive.
+    Diffs are _not_ communtative.
     """
 
     def __init__(self, changes):

@@ -39,9 +39,34 @@ def test_invert():
 
 def test_contatenation():
     """ Check that two diffs concatenate correctly """
-    pass
+    string = "The plumage don't enter into it. It's stone dead."
+    diff_a = Diff([("spam", 3, True)])
+    diff_b = Diff([("plumage", 1, False)])
+    diff_cat = diff_a.concat(diff_b)
+    altstring = diff_a.apply(string)
+    altstring = diff_b.apply(altstring)
+    assert diff_cat.apply(string) == altstring
 
 def test_associativity():
-    """ Diffs should associate """
+    """ Diffs should associate, (A+B)+C=A+(B+C) """
     string = "It's not much of a cheese shop, is it?"
-    pass
+    diff_a = Diff([("not", 1, False)])
+    diff_b = Diff([("good", 3, True)])
+    diff_c = Diff([("then", 4, True)])
+    diff_ab = diff_a.concat(diff_b)
+    diff_bc = diff_b.concat(diff_c)
+    assert diff_c.apply(diff_ab.apply(string)) == diff_bc.apply(diff_a.apply(string))
+
+def test_identity():
+    """ Concatenating a diff with its inversion should be a no-op """
+    string = "I'm a lumberjack, and I'm okay. I sleep all night and I work all day."
+    diff = Diff([("lumberjack,", 2, False), ("parrot", 6, True), ("spam", 8, True)])
+    no_diff = diff.concat(diff.invert())
+    assert no_diff.apply(string) == string
+
+def test_serialization():
+    """ Test that diffs serialize as expect """
+    string = "I want to apologize, humbly, deeply, and sincerely about the fork."
+    diff = Diff([("really", 1, True), ("apologize", 4, False)])
+    diffdct = diff.to_dict()
+    assert Diff.from_dict(diffdct).apply(string) == diff.apply(string)
