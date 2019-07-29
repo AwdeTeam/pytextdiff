@@ -20,16 +20,17 @@ class Diff:
     """
     A Diff can be applied to a string to modify it or to another diff to combine
     Diffs are immutable.
+    Diffs are _not_ communtitive.
     """
 
     def __init__(self, changes):
-        self._changes = changes # List of triplets (index, is_addition, word)
+        self._changes = changes # List of triplets (word, index, is_addition)
 
     def apply(self, string):
         """ Modify the string according to the diff """
         words = string.split(" ")
 
-        for index, is_add, word in self._changes:
+        for word, index, is_add in self._changes:
             if is_add:
                 words.insert(index, word)
             else:
@@ -39,7 +40,7 @@ class Diff:
 
     def invert(self):
         """ Invert the diff so that it undoes itself """
-        invdiff = Diff([(index, not is_add, word) for index, is_add, word in self._changes[::-1]])
+        invdiff = Diff([[word, index, not is_add] for word, index, is_add in self._changes[::-1]])
         return invdiff
 
     def concat(self, diff):
@@ -48,7 +49,7 @@ class Diff:
 
     def to_dict(self):
         """ Generate a dictionary representation of this diff """
-        return {"diff" : [[index, is_add, word] for index, is_add, word in self._changes]}
+        return {"diff" : [[word, index, is_add] for word, index, is_add in self._changes]}
 
     @classmethod
     def from_dict(cls, dct):
