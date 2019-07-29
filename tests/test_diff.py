@@ -70,3 +70,16 @@ def test_serialization():
     diff = Diff([("really", 1, True), ("apologize", 4, False)])
     diffdct = diff.to_dict()
     assert Diff.from_dict(diffdct).apply(string) == diff.apply(string)
+
+def test_multi_add():
+    """ Test that diff is able to add multiple words in a single change """
+    string0 = "The short brown fox jumped over the lazy dog.\n New York Sand"
+    string1 = "The quick brown fox jumped over the lazy dog.\n" +\
+            "Red leather yellow leather Unique New York"
+    diff = Diff([
+	["short", 1, False], 
+        ["quick", 1, True],
+        ["Red leather yellow leather\n Unique", 9, True],
+        ["Sand", 16, False]
+    ])
+    assert diff.apply(string0) == string1
