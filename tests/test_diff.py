@@ -87,6 +87,11 @@ def test_multi_add():
 def test_multi_space():
     """ Test that diff is able to handle multiple spaces """
     string = "Hey,  everybody! Somebody 'mattress' to Mr Lambert!"
-    diff = Diff([("said", 3, True)])
+    diff = Diff([("said", 4, True)])
     assert diff.apply(string) == "Hey,  everybody! Somebody said 'mattress' to Mr Lambert!"
     
+def test_leading_space():
+    """ Test that diff is able to handle multiple spaces """
+    string = " Hey, everybody! Somebody 'mattress' to Mr Lambert!"
+    diff = Diff([("said", 4, True)])
+    assert diff.apply(string) == " Hey, everybody! Somebody said 'mattress' to Mr Lambert!"

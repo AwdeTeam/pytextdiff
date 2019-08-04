@@ -31,7 +31,7 @@ class Diff:
         words = string.split(" ")
 
         for word, index, is_add in self._changes:
-            word_len = len(list(filter(None, word.split(" ")))) # filter?
+            word_len = len(word.split(" ")) # filter?
             if is_add:
                 words.insert(index, word)
             else:
