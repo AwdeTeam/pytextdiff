@@ -9,7 +9,7 @@ Testing the behavior of the wdiff_wrapper
 **Created**
     2019-07-28
 **Updated**
-    2019-07-28 by WildfireXIII
+    2019-08-04 by WildfireXIII
 **Author**
     Darkar
 **Copyright**
