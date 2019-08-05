@@ -46,3 +46,60 @@ def test_remove_first():
     post_string = "deceased, Mr Apricot, is now 'elpless."
     diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
     assert diff.apply(pre_string) == post_string
+
+def test_invert_first():
+    """ Test the basic behavior of finding a diff and applying it """
+    pre_string = "The deceased, Mr Apricot, is now 'elpless."
+    post_string = "deceased, Mr Apricot, is now 'elpless."
+    diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
+    assert diff.invert().apply(post_string) == pre_string
+
+def test_multi_add():
+    """ Test that diff is able to add multiple words in a single change """
+    pre_string = "The short brown fox jumped over the lazy dog. New York Sand"
+    post_string = "The quick brown fox jumped over the lazy dog. " +\
+            "Red leather yellow leather Unique New York"
+    diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
+    assert diff.apply(pre_string) == post_string
+
+def test_multi_space():
+    """ Test that diff is able to handle multiple spaces """
+    pre_string = "Hey,  everybody! Somebody 'mattress' to Mr Lambert!"
+    post_string = "Hey,  everybody! Somebody said 'mattress' to Mr Lambert!"
+    diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
+    assert diff.apply(pre_string) == post_string
+    
+def test_leading_space():
+    """ Test that diff is able to handle multiple spaces """
+    pre_string = " Hey, everybody! Somebody 'mattress' to Mr Lambert!"
+    post_string = " Hey, everybody! Somebody said 'mattress' to Mr Lambert!"
+    diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
+    assert diff.apply(pre_string) == post_string
+
+def test_add_space():
+    """ Test that diff is able to add a space """
+    pre_string = "Hey, everybody! Somebody 'mattress' to Mr Lambert!"
+    post_string = "Hey,  everybody! Somebody said 'mattress' to Mr Lambert!"
+    diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
+    assert diff.apply(pre_string) == post_string
+    
+def test_add_leading_space():
+    """ Test that diff is able to add a leading space """
+    pre_string = "Hey, everybody! Somebody 'mattress' to Mr Lambert!"
+    post_string = " Hey, everybody! Somebody said 'mattress' to Mr Lambert!"
+    diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
+    assert diff.apply(pre_string) == post_string
+
+def test_remove_space():
+    """ Test that diff is able to remove a space """
+    pre_string = "Hey,  everybody! Somebody 'mattress' to Mr Lambert!"
+    post_string = "Hey, everybody! Somebody said 'mattress' to Mr Lambert!"
+    diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
+    assert diff.apply(pre_string) == post_string
+    
+def test_remove_leading_space():
+    """ Test that diff is able to remove a leading space """
+    pre_string = " Hey, everybody! Somebody 'mattress' to Mr Lambert!"
+    post_string = "Hey, everybody! Somebody said 'mattress' to Mr Lambert!"
+    diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
+    assert diff.apply(pre_string) == post_string

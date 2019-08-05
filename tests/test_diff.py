@@ -95,3 +95,9 @@ def test_leading_space():
     string = " Hey, everybody! Somebody 'mattress' to Mr Lambert!"
     diff = Diff([("said", 4, True)])
     assert diff.apply(string) == " Hey, everybody! Somebody said 'mattress' to Mr Lambert!"
+
+def test_add_leading_space():
+    """ Test that diff is able to handle multiple spaces """
+    string = "Hey, everybody! Somebody 'mattress' to Mr Lambert!"
+    diff = Diff([(" ", 0, True)])
+    assert diff.apply(string) == " Hey, everybody! Somebody 'mattress' to Mr Lambert!"
