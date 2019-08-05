@@ -51,6 +51,21 @@ from pytextdiff.diff import Diff
                 ["The", 0, True]
             ]
         ),
+        (
+            "This is a test [-of wits-] {+of\r\nwits+} and knowledge",
+            [
+                ["of wits", 4, False],
+                ["of\r\nwits", 4, True]
+            ]
+        ),
+        (
+            "{+This+} is a test",
+            [["This", 0, True]]
+        ),
+        (
+            "[-This-]is a test",
+            [["This", 0, False]]
+        )
     ],
 )
 def test_parse_wdiff_output(cmd_output, expected_changes):
