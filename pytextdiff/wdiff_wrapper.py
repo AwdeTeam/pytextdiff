@@ -18,6 +18,7 @@ Functions to handle interfacing with the wdiff command line utility.
 
 import logging
 import subprocess
+import os
 from shutil import which
 from shlex import split
 
@@ -93,8 +94,11 @@ def parse_wdiff_output(output):
     # ---- parse output for removals ----
 
     # find each instance of a removal starting delimiter
-    removal_starts = list(filter(None, output.split("[-"))) # filter ensures no ''
-    print(removal_starts)
+    removal_starts = output.split(" [-")
+
+    # make sure the first word wasn't a removal (remove the delimiter if so)
+    if len(output) > 2 and output[0:2] == "[-":
+        removal_starts[0] = removal_starts[0][2:]
 
     word_offset = 0
 
@@ -108,7 +112,7 @@ def parse_wdiff_output(output):
             end_index = removal_start_section.index("-]")
         except ValueError:
             # this was probably the first section before an actual removal because of how split works
-            word_offset += len(list(filter(None, removal_start_section.split(" "))))
+            word_offset += len(removal_start_section.split(" "))
             continue
 
         print(end_index)
@@ -119,13 +123,17 @@ def parse_wdiff_output(output):
         changes.append(change)
 
         # recalculate word offset
-        word_offset += len(list(filter(None, removal_start_section.split(" "))))
+        word_offset += len(removal_start_section.split(" "))
 
 
     # ---- parse output for additions ----
 
     # find each instance of a addition starting delimiter
-    addition_starts = list(filter(None, output.split("{+")))
+    addition_starts = output.split(" {+")
+    
+    # make sure the first word wasn't a removal (remove the delimiter if so)
+    if len(output) > 2 and output[0:2] == "{+":
+        removal_starts[0] = removal_starts[0][2:]
 
     word_offset = 0
 
@@ -136,7 +144,7 @@ def parse_wdiff_output(output):
             end_index = addition_start_section.index("+}")
         except ValueError:
             # this was probably the first section before an actual removal because of how split works
-            word_offset += len(list(filter(None, addition_start_section.split(" "))))
+            word_offset += len(addition_start_section.split(" "))
             continue
 
         print(end_index)
@@ -146,7 +154,7 @@ def parse_wdiff_output(output):
         changes.append(change)
 
         # recalculate word offset
-        word_offset += len(list(filter(None, addition_start_section.split(" "))))
+        word_offset += len(addition_start_section.split(" "))
 
 
     # ---- offset adjustment ----
@@ -163,7 +171,7 @@ def parse_wdiff_output(output):
         is_addition = change[2]
         change_offset = change[1]
         if not is_addition: # if it's a removal
-            change_word_count = len(list(filter(None, change[0].split(" "))))
+            change_word_count = len(change[0].split(" "))
             for j in range(i+1, len(changes)): # subtract word count from all later changes (if it comes after change)
                 future_change = changes[j]
                 if future_change[1] <= change_offset: # it wasn't _actually_ in the future, so skip NOTE: this shouldn't actually happen since sorted by offset
