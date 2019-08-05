@@ -9,7 +9,7 @@ Diff object which can be applied to text.
 **Created**
     2019-07-13
 **Updated**
-    2019-07-13 by Darkar
+    2019-08-04 by Darkar
 **Author**
     Darkar
 **Copyright**
