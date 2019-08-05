@@ -9,7 +9,7 @@ Functions to handle interfacing with the wdiff command line utility.
 **Created**
     2019-07-13
 **Updated**
-    2019-07-27 by WildfireXIII
+    2019-08-04 by WildfireXIII
 **Author**
     WildfireXIII
 **Copyright**
