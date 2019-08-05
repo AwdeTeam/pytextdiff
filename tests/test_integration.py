@@ -16,6 +16,8 @@ Test the wdiff wrapper and the diff object
     This software is licensed under GPL3, see LICENSE for details
 """
 
+import pytest
+
 from pytextdiff.diff import Diff
 from pytextdiff import wdiff_wrapper
 
@@ -83,13 +85,6 @@ def test_add_space():
     diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
     assert diff.apply(pre_string) == post_string
     
-def test_add_leading_space():
-    """ Test that diff is able to add a leading space """
-    pre_string = "Hey, everybody! Somebody 'mattress' to Mr Lambert!"
-    post_string = " Hey, everybody! Somebody said 'mattress' to Mr Lambert!"
-    diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
-    assert diff.apply(pre_string) == post_string
-
 def test_remove_space():
     """ Test that diff is able to remove a space """
     pre_string = "Hey,  everybody! Somebody 'mattress' to Mr Lambert!"
@@ -97,9 +92,17 @@ def test_remove_space():
     diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
     assert diff.apply(pre_string) == post_string
     
-def test_remove_leading_space():
-    """ Test that diff is able to remove a leading space """
-    pre_string = " Hey, everybody! Somebody 'mattress' to Mr Lambert!"
-    post_string = "Hey, everybody! Somebody said 'mattress' to Mr Lambert!"
-    diff = wdiff_wrapper.run_wdiff(pre_string, post_string)
-    assert diff.apply(pre_string) == post_string
+@pytest.mark.parametrize(
+        "cmd_output, input_string, expected_output_string",
+        [
+            (
+                "The [-short-] {+quick+} brown fox jumped over the lazy dog.\n {+Red leather yellow leather\n Unique+} New York [-Sand-]",
+                "The short brown fox jumped over the lazy dog.\n New York Sand",
+                "The quick brown fox jumped over the lazy dog.\n Red leather yellow leather\n Unique New York"
+            ),
+        ],
+)
+def test_parse_wdiff_output_applies(cmd_output, input_string, expected_output_string):
+    changes = wdiff_wrapper.parse_wdiff_output(cmd_output)
+    diff = Diff(changes)
+    assert diff.apply(input_string) == expected_output_string
