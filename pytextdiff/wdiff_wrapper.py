@@ -133,7 +133,24 @@ def parse_wdiff_output(output):
     
     # make sure the first word wasn't a removal (remove the delimiter if so)
     if len(output) > 2 and output[0:2] == "{+":
-        removal_starts[0] = removal_starts[0][2:]
+        addition_starts[0] = addition_starts[0][2:]
+
+    print("Addition starts:")
+    print(addition_starts)
+
+    # check for consecutive removal/addition at the beginning
+    consecutive_index = -1
+    try:
+        consecutive_index = output.index("-]{+")
+    except ValueError:
+        pass
+    if consecutive_index != -1:
+        # we assume this can only happen at the beginning of a file, so first instance
+        addition_starts[0] = addition_starts[0][consecutive_index+4:]
+        addition_starts.insert(0, output[0:consecutive_index+2])
+
+    print(addition_starts)
+
 
     word_offset = 0
 

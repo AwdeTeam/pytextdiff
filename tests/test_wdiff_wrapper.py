@@ -34,6 +34,23 @@ from pytextdiff.diff import Diff
                 ["Sand", 16, False],
             ]
         ),
+        (
+            "The [-short-] {+quick+} brown fox jumped over the lazy [-dog.\r\nNew-] {+dog.\r\nRed leather yellow leather\r\nUnique New+} York [-Sand-]",
+            [
+                ["short", 1, False],
+                ["quick", 1, True],
+                ["dog.\r\nNew", 8, False],
+                ["dog.\r\nRed leather yellow leather\r\nUnique New", 8, True],
+                ["Sand", 14, False],
+            ]
+        ),
+        (
+            "[-the-]{+The+} quick brown fox jumped over the lazy dog",
+            [
+                ["the", 0, False],
+                ["The", 0, True]
+            ]
+        ),
     ],
 )
 def test_parse_wdiff_output(cmd_output, expected_changes):
